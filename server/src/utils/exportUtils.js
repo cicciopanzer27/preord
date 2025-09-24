@@ -1,6 +1,7 @@
 const { Parser } = require('json2csv');
 const fs = require('fs');
 const path = require('path');
+const { appendRows } = require('./googleSheets');
 
 /**
  * Converte un array di oggetti in formato CSV
@@ -105,3 +106,35 @@ module.exports = {
   preparePreordersForExport,
   generateCSVFile
 };
+
+/**
+ * Maps a single preorder to a Google Sheet row following client's column layout.
+ * Columns: Nome e Cognome, Email, Telefono, Indirizzo di Consegna, Note Aggiuntive,
+ * "Extra Vergine di Oliva Classico - 250ml", Aromatizzato al Lentisco Speciale - 250ml,
+ * Aromatizzato al Mirto Speciale - 250ml
+ */
+const mapPreorderToSheetRow = (preorder) => {
+  return [
+    preorder.name || '',
+    preorder.email || '',
+    preorder.phone || '',
+    preorder.address || '',
+    preorder.notes || '',
+    preorder.products?.classic ?? 0,
+    preorder.products?.lentisco ?? 0,
+    preorder.products?.mirto ?? 0
+  ];
+};
+
+/**
+ * Appends a preorder row to Google Sheet if GOOGLE_SHEETS_SPREADSHEET_ID is configured.
+ * Range defaults to 'Preordini!A1'.
+ */
+const appendPreorderToGoogleSheet = async (preorder, range = process.env.GOOGLE_SHEETS_RANGE || 'Preordini!A1') => {
+  if (!process.env.GOOGLE_SHEETS_SPREADSHEET_ID) return; // silently skip if not configured
+  const row = mapPreorderToSheetRow(preorder);
+  await appendRows(range, [row]);
+};
+
+module.exports.mapPreorderToSheetRow = mapPreorderToSheetRow;
+module.exports.appendPreorderToGoogleSheet = appendPreorderToGoogleSheet;

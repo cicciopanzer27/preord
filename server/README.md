@@ -70,6 +70,7 @@ server/
 - `GET /api/export/csv/download` - Scarica direttamente un file CSV con tutti i preordini
 - `GET /api/export/json` - Esporta tutti i preordini in formato JSON
 - `GET /api/export/stats` - Ottiene statistiche sui preordini
+- `POST /api/export/google-sheets/sync` - Sincronizza tutti i preordini sul Google Sheet
 
 ## Formato dei dati
 
@@ -94,3 +95,30 @@ server/
 
 - I dati vengono salvati localmente nel file `data/preorders.json`
 - Per un ambiente di produzione, si consiglia di utilizzare un database come MongoDB o PostgreSQL
+
+## Configurazione Google Sheets
+
+Per abilitare l'integrazione con Google Sheets, crea un account di servizio su Google Cloud, scarica le credenziali e condividi il foglio di calcolo con l'email dell'account di servizio.
+
+Variabili richieste nel file `.env` nella cartella `server/`:
+
+```env
+# Google Sheets (Service Account)
+GOOGLE_PROJECT_ID=your-project-id
+GOOGLE_CLIENT_EMAIL=service-account@your-project-id.iam.gserviceaccount.com
+GOOGLE_PRIVATE_KEY="-----BEGIN PRIVATE KEY-----\n...\n-----END PRIVATE KEY-----\n"
+GOOGLE_SHEETS_SPREADSHEET_ID=your_spreadsheet_id
+# Opzionale: range con intestazioni esistenti
+GOOGLE_SHEETS_RANGE=Preordini!A1
+```
+
+Mappatura colonne utilizzata:
+
+- "Nome e Cognome"
+- "Email"
+- "Telefono"
+- "Indirizzo di Consegna"
+- "Note Aggiuntive"
+- "Extra Vergine di Oliva Classico - 250ml"
+- "Aromatizzato al Lentisco Speciale - 250ml"
+- "Aromatizzato al Mirto Speciale - 250ml"

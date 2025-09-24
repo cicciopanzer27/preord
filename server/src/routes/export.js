@@ -2,7 +2,8 @@ const express = require('express');
 const path = require('path');
 const fs = require('fs');
 const preorderModel = require('../models/preorder');
-const { generateCSVFile, convertToCSV, preparePreordersForExport } = require('../utils/exportUtils');
+const { generateCSVFile, convertToCSV, preparePreordersForExport, mapPreorderToSheetRow } = require('../utils/exportUtils');
+const { appendRows } = require('../utils/googleSheets');
 
 const router = express.Router();
 
@@ -179,3 +180,30 @@ router.get('/stats', (req, res) => {
 });
 
 module.exports = router;
+
+/**
+ * POST /api/export/google-sheets/sync
+ * Sincronizza tutti i preordini sul Google Sheet configurato
+ */
+router.post('/google-sheets/sync', async (req, res) => {
+  try {
+    const preorders = preorderModel.getAllPreorders();
+    if (preorders.length === 0) {
+      return res.status(404).json({ error: 'Nessun preordine da sincronizzare' });
+    }
+
+    if (!process.env.GOOGLE_SHEETS_SPREADSHEET_ID) {
+      return res.status(400).json({ error: 'Google Sheets non configurato sul server' });
+    }
+
+    const range = process.env.GOOGLE_SHEETS_RANGE || 'Preordini!A1';
+    const rows = preorders.map(mapPreorderToSheetRow);
+
+    await appendRows(range, rows);
+
+    res.json({ success: true, rowsAppended: rows.length });
+  } catch (error) {
+    console.error('Errore nella sincronizzazione con Google Sheets:', error);
+    res.status(500).json({ error: 'Errore nella sincronizzazione con Google Sheets' });
+  }
+});

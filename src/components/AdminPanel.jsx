@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react'
 import { Button } from '@/components/ui/button.jsx'
+import { API_BASE_URL } from '@/lib/utils.js'
 import { Download, FileSpreadsheet, FileJson, BarChart3, Trash2, RefreshCw, Eye } from 'lucide-react'
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = API_BASE_URL;
 
 const AdminPanel = () => {
   const [preorders, setPreorders] = useState([]);

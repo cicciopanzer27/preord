@@ -1,6 +1,7 @@
 const express = require('express');
 const { z } = require('zod');
 const preorderModel = require('../models/preorder');
+const { appendPreorderToGoogleSheet } = require('../utils/exportUtils');
 
 const router = express.Router();
 
@@ -100,6 +101,9 @@ router.post('/', (req, res) => {
     
     const savedPreorder = preorderModel.savePreorder(preorderData);
     
+    // Append to Google Sheet if configured (non-blocking)
+    appendPreorderToGoogleSheet(savedPreorder).catch(() => {});
+
     res.status(201).json(savedPreorder);
   } catch (error) {
     console.error('Errore nella creazione del preordine:', error);

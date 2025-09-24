@@ -1,8 +1,9 @@
 import { useState } from 'react'
 import { Button } from '@/components/ui/button.jsx'
+import { API_BASE_URL } from '@/lib/utils.js'
 import { Check, Loader2 } from 'lucide-react'
 
-const API_URL = 'http://localhost:5000/api';
+const API_URL = API_BASE_URL;
 
 const PreorderForm = () => {
   const [formData, setFormData] = useState({
