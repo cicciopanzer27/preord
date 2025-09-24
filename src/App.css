@@ -1,0 +1,240 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+@custom-variant dark (&:is(.dark *));
+
+@theme inline {
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+}
+
+:root {
+  /* Base */
+  --radius: 0.625rem;
+  --background: oklch(1 0 0);
+  --foreground: oklch(0.145 0 0);
+  
+  /* Card */
+  --card: oklch(1 0 0);
+  --card-foreground: oklch(0.145 0 0);
+  
+  /* Popover */
+  --popover: oklch(1 0 0);
+  --popover-foreground: oklch(0.145 0 0);
+  
+  /* Verde Oliva Palette */
+  --olive-50: #f8f9f3;
+  --olive-100: #eef0e5;
+  --olive-200: #dde2cc;
+  --olive-300: #c5cda8;
+  --olive-400: #a7b47c;
+  --olive-500: #8c9c5a;
+  --olive-600: #6b7a3d;
+  --olive-700: #556231;
+  --olive-800: #414a29;
+  --olive-900: #343c24;
+  
+  /* Primary (Verde Oliva Medio) */
+  --primary: #6b7a3d;
+  --primary-foreground: #ffffff;
+  
+  /* Secondary (Verde Oliva Chiaro) */
+  --secondary: #dde2cc;
+  --secondary-foreground: #343c24;
+  
+  /* Muted */
+  --muted: #f8f9f3;
+  --muted-foreground: #6c6c6c;
+  
+  /* Accent (Verde Oliva Scuro) */
+  --accent: #414a29;
+  --accent-foreground: #ffffff;
+  
+  /* Destructive */
+  --destructive: oklch(0.577 0.245 27.325);
+  
+  /* Border & Input */
+  --border: #e5e7d9;
+  --input: #e5e7d9;
+  --ring: #a7b47c;
+  
+  /* Chart Colors */
+  --chart-1: #8c9c5a;
+  --chart-2: #6b7a3d;
+  --chart-3: #556231;
+  --chart-4: #414a29;
+  --chart-5: #343c24;
+  
+  /* Sidebar */
+  --sidebar: #f8f9f3;
+  --sidebar-foreground: #343c24;
+  --sidebar-primary: #6b7a3d;
+  --sidebar-primary-foreground: #ffffff;
+  --sidebar-accent: #eef0e5;
+  --sidebar-accent-foreground: #343c24;
+  --sidebar-border: #dde2cc;
+  --sidebar-ring: #a7b47c;
+}
+
+.dark {
+  --background: #1c1f16;
+  --foreground: #f8f9f3;
+  
+  --card: #252a1d;
+  --card-foreground: #f8f9f3;
+  
+  --popover: #252a1d;
+  --popover-foreground: #f8f9f3;
+  
+  --primary: #8c9c5a;
+  --primary-foreground: #1c1f16;
+  
+  --secondary: #414a29;
+  --secondary-foreground: #f8f9f3;
+  
+  --muted: #343c24;
+  --muted-foreground: #c5cda8;
+  
+  --accent: #556231;
+  --accent-foreground: #f8f9f3;
+  
+  --destructive: #e57373;
+  
+  --border: rgba(248, 249, 243, 0.1);
+  --input: rgba(248, 249, 243, 0.15);
+  --ring: #6b7a3d;
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  body {
+    @apply bg-background text-foreground;
+  }
+}
+
+/* Custom styles for NURA landing page */
+@layer components {
+  .prose {
+    @apply text-stone-700;
+  }
+  
+  .prose p {
+    @apply mb-4 leading-relaxed;
+  }
+  
+  .prose strong {
+    @apply font-semibold text-stone-800;
+  }
+  
+  .btn-primary {
+    @apply bg-[#6b7a3d] hover:bg-[#556231] text-white transition-colors duration-300;
+  }
+  
+  .btn-secondary {
+    @apply bg-[#dde2cc] hover:bg-[#c5cda8] text-[#343c24] transition-colors duration-300;
+  }
+  
+  .badge-primary {
+    @apply bg-[#eef0e5] text-[#556231];
+  }
+  
+  .text-primary {
+    @apply text-[#6b7a3d];
+  }
+  
+  .border-primary {
+    @apply border-[#6b7a3d];
+  }
+}
+
+/* Golden Circle Sections */
+.why-section {
+  @apply bg-[#f8f9f3] text-stone-800;
+}
+
+.how-section {
+  @apply bg-white text-stone-800;
+}
+
+.what-section {
+  @apply bg-[#eef0e5] text-stone-800;
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
+
+/* Custom animations */
+@keyframes fadeInUp {
+  from {
+    opacity: 0;
+    transform: translateY(30px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.animate-fade-in-up {
+  animation: fadeInUp 0.6s ease-out;
+}
+
+/* Image hover effects */
+.group:hover .group-hover\:scale-105 {
+  transform: scale(1.05);
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: #f8f9f3;
+}
+
+::-webkit-scrollbar-thumb {
+  background: #c5cda8;
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: #a7b47c;
+}
