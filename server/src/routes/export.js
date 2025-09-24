@@ -4,6 +4,8 @@ const fs = require('fs');
 const preorderModel = require('../models/preorder');
 const { generateCSVFile, convertToCSV, preparePreordersForExport, mapPreorderToSheetRow } = require('../utils/exportUtils');
 const { appendRows } = require('../utils/googleSheets');
+const { postPreorderToAppsScript } = require('../utils/appsScript');
+const { requireAdminToken } = require('../utils/auth');
 
 const router = express.Router();
 
@@ -11,7 +13,7 @@ const router = express.Router();
  * GET /api/export/csv
  * Esporta tutti i preordini in formato CSV
  */
-router.get('/csv', (req, res) => {
+router.get('/csv', requireAdminToken, (req, res) => {
   try {
     const preorders = preorderModel.getAllPreorders();
     
@@ -44,7 +46,7 @@ router.get('/csv', (req, res) => {
  * GET /api/export/csv/download
  * Genera e scarica direttamente un file CSV con tutti i preordini
  */
-router.get('/csv/download', (req, res) => {
+router.get('/csv/download', requireAdminToken, (req, res) => {
   try {
     const preorders = preorderModel.getAllPreorders();
     
@@ -94,7 +96,7 @@ router.get('/csv/download', (req, res) => {
  * GET /api/export/json
  * Esporta tutti i preordini in formato JSON
  */
-router.get('/json', (req, res) => {
+router.get('/json', requireAdminToken, (req, res) => {
   try {
     const preorders = preorderModel.getAllPreorders();
     
@@ -113,7 +115,7 @@ router.get('/json', (req, res) => {
  * GET /api/export/stats
  * Ottiene statistiche sui preordini
  */
-router.get('/stats', (req, res) => {
+router.get('/stats', requireAdminToken, (req, res) => {
   try {
     const preorders = preorderModel.getAllPreorders();
     
@@ -185,7 +187,7 @@ module.exports = router;
  * POST /api/export/google-sheets/sync
  * Sincronizza tutti i preordini sul Google Sheet configurato
  */
-router.post('/google-sheets/sync', async (req, res) => {
+router.post('/google-sheets/sync', requireAdminToken, async (req, res) => {
   try {
     const preorders = preorderModel.getAllPreorders();
     if (preorders.length === 0) {
@@ -205,5 +207,30 @@ router.post('/google-sheets/sync', async (req, res) => {
   } catch (error) {
     console.error('Errore nella sincronizzazione con Google Sheets:', error);
     res.status(500).json({ error: 'Errore nella sincronizzazione con Google Sheets' });
+  }
+});
+
+/**
+ * POST /api/export/gas/sync
+ * Invia tutti i preordini alla Web App di Google Apps Script (se configurata)
+ */
+router.post('/gas/sync', requireAdminToken, async (req, res) => {
+  try {
+    const { GAS_WEBAPP_URL, GAS_SHARED_SECRET } = process.env;
+    if (!GAS_WEBAPP_URL || !GAS_SHARED_SECRET) {
+      return res.status(400).json({ error: 'Apps Script non configurato sul server' });
+    }
+
+    const preorders = preorderModel.getAllPreorders();
+    if (preorders.length === 0) {
+      return res.status(404).json({ error: 'Nessun preordine da sincronizzare' });
+    }
+
+    // best-effort: invia in parallelo
+    await Promise.all(preorders.map(p => postPreorderToAppsScript(p)));
+    res.json({ success: true, rowsAppended: preorders.length });
+  } catch (error) {
+    console.error('Errore nella sincronizzazione con Apps Script:', error);
+    res.status(500).json({ error: 'Errore nella sincronizzazione con Apps Script' });
   }
 });

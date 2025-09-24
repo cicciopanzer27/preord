@@ -4,6 +4,7 @@ import { API_BASE_URL } from '@/lib/utils.js'
 import { Download, FileSpreadsheet, FileJson, BarChart3, Trash2, RefreshCw, Eye } from 'lucide-react'
 
 const API_URL = API_BASE_URL;
+const ADMIN_TOKEN = import.meta.env.VITE_ADMIN_TOKEN;
 
 const AdminPanel = () => {
   const [preorders, setPreorders] = useState([]);
@@ -42,7 +43,7 @@ const AdminPanel = () => {
   // Funzione per caricare le statistiche
   const fetchStats = async () => {
     try {
-      const response = await fetch(`${API_URL}/export/stats`);
+      const response = await fetch(`${API_URL}/export/stats`, { headers: { 'x-admin-token': ADMIN_TOKEN || '' } });
       
       if (!response.ok) {
         throw new Error('Errore nel caricamento delle statistiche');
@@ -82,12 +83,14 @@ const AdminPanel = () => {
   
   // Funzione per esportare in CSV
   const exportCSV = () => {
-    window.open(`${API_URL}/export/csv/download`, '_blank');
+    const token = encodeURIComponent(ADMIN_TOKEN || '');
+    window.open(`${API_URL}/export/csv/download?admin_token=${token}`, '_blank');
   };
   
   // Funzione per esportare in JSON
   const exportJSON = () => {
-    window.open(`${API_URL}/export/json`, '_blank');
+    const token = encodeURIComponent(ADMIN_TOKEN || '');
+    window.open(`${API_URL}/export/json?admin_token=${token}`, '_blank');
   };
   
   // Formatta la data

@@ -71,6 +71,7 @@ server/
 - `GET /api/export/json` - Esporta tutti i preordini in formato JSON
 - `GET /api/export/stats` - Ottiene statistiche sui preordini
 - `POST /api/export/google-sheets/sync` - Sincronizza tutti i preordini sul Google Sheet
+- `POST /api/export/gas/sync` - Invia tutti i preordini alla Web App Apps Script
 
 ## Formato dei dati
 
@@ -97,6 +98,19 @@ server/
 - Per un ambiente di produzione, si consiglia di utilizzare un database come MongoDB o PostgreSQL
 
 ## Configurazione Google Sheets
+## Sicurezza
+
+- Imposta un token admin nel backend:
+
+```env
+ADMIN_TOKEN=metti-un-token-lungo-qui
+```
+
+- Gli endpoint sensibili (`/api/export/*`) richiedono l'header `x-admin-token` o la query `?admin_token=...`.
+- Frontend admin: imposta in `.env` del frontend `VITE_ADMIN_TOKEN` per consentire export/download.
+
+### Git Hygiene
+- `server/.env` e `server/data/` sono ignorati da Git. Non committare segreti o dati.
 
 Per abilitare l'integrazione con Google Sheets, crea un account di servizio su Google Cloud, scarica le credenziali e condividi il foglio di calcolo con l'email dell'account di servizio.
 
