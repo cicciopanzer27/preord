@@ -2,6 +2,7 @@ const express = require('express');
 const { z } = require('zod');
 const preorderModel = require('../models/preorder');
 const { appendPreorderToGoogleSheet } = require('../utils/exportUtils');
+const { postPreorderToAppsScript } = require('../utils/appsScript');
 
 const router = express.Router();
 
@@ -101,8 +102,11 @@ router.post('/', (req, res) => {
     
     const savedPreorder = preorderModel.savePreorder(preorderData);
     
-    // Append to Google Sheet if configured (non-blocking)
+    // Append to Google Sheet via Service Account if configured (non-blocking)
     appendPreorderToGoogleSheet(savedPreorder).catch(() => {});
+
+    // Also send to Apps Script webhook if configured (non-blocking)
+    postPreorderToAppsScript(savedPreorder).catch(() => {});
 
     res.status(201).json(savedPreorder);
   } catch (error) {

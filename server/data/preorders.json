@@ -1,3 +1,20 @@
 {
-  "preorders": []
+  "preorders": [
+    {
+      "id": "f1976ffb-fcdb-48b2-9381-cbd43b7635be",
+      "name": "ciccio",
+      "email": "ciccio@c.com",
+      "phone": "ciccio",
+      "address": "ciccio",
+      "products": {
+        "classic": 3,
+        "lentisco": 3,
+        "mirto": 3
+      },
+      "notes": "ciccio",
+      "total": 248.1,
+      "status": "pending",
+      "createdAt": "2025-09-24T12:57:57.472Z"
+    }
+  ]
 }
